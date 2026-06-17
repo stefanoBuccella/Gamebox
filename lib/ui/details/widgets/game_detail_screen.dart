@@ -61,17 +61,26 @@ class GameDetailScreen extends StatelessWidget {
                         const SizedBox(width: 12),
                         Expanded(
                           flex: 1,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              context.read<UserViewModel>().addToToPlay(game);
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Aggiunto a To Play')));
+                          child: Consumer<UserViewModel>(
+                            builder: (context, userVM, child) {
+                              final inToPlay = userVM.isInToPlay(game.id);
+                              return ElevatedButton(
+                                onPressed: () async {
+                                  await userVM.toggleToPlay(game);
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(inToPlay ? 'Rimosso da To Play' : 'Aggiunto a To Play')),
+                                    );
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: inToPlay ? Colors.redAccent : AppColors.cyberCyan,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                ),
+                                child: Text(inToPlay ? 'REMOVE' : 'TO PLAY', 
+                                  style: const TextStyle(color: AppColors.pureWhite, fontWeight: FontWeight.bold, fontSize: 12)),
+                              );
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.cyberCyan,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                            ),
-                            child: const Text('TO PLAY', 
-                              style: TextStyle(color: AppColors.pureWhite, fontWeight: FontWeight.bold, fontSize: 12)),
                           ),
                         ),
                       ],

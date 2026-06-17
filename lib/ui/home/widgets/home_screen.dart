@@ -1,61 +1,134 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../view_model/home_view_model.dart';
-import 'game_card.dart';
 import '../../core/theme/app_colors.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    // Chiamiamo il caricamento dei dati non appena la view viene creata
-    // Usiamo microtask per assicurarci che il context sia pronto
-    Future.microtask(
-      () => context.read<HomeViewModel>().fetchGames(),
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
+        backgroundColor: AppColors.voidBlack,
+        appBar: AppBar(
+          backgroundColor: AppColors.voidBlack,
+          elevation: 0,
+          title: const Text(
+            'GAMEBOX',
+            style: TextStyle(
+              color: AppColors.pureWhite,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+            ),
+          ),
+          centerTitle: true,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(50),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: const EdgeInsets.all(3),
+              height: 40,
+              decoration: BoxDecoration(
+                color: AppColors.gunmetal,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Theme(
+                data: ThemeData(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                ),
+                child: TabBar(
+                  isScrollable: false,
+                  indicator: BoxDecoration(
+                    color: AppColors.electricViolet,
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  labelColor: AppColors.pureWhite,
+                  unselectedLabelColor: AppColors.charcoal,
+                  dividerColor: Colors.transparent,
+                  overlayColor: WidgetStateProperty.all(Colors.transparent),
+                  labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                  tabs: const [
+                    Tab(text: 'POPULAR'),
+                    Tab(text: 'LISTS'),
+                    Tab(text: 'REVIEWS'),
+                    Tab(text: 'MY FEED'),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        body: const TabBarView(
+          children: [
+            PopularGamesTab(),
+            PopularListsTab(),
+            PopularReviewsTab(),
+            MyFeedTab(),
+          ],
+        ),
+      ),
     );
   }
+}
+
+class PopularGamesTab extends StatelessWidget {
+  const PopularGamesTab({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Watch ascolta i cambiamenti nel ViewModel (isLoading, lista giochi)
-    final viewModel = context.watch<HomeViewModel>();
-
-    return Scaffold(
-      backgroundColor: AppColors.voidBlack,
-      appBar: AppBar(
-        backgroundColor: AppColors.gunmetal,
-        title: const Text(
-          'GAMEBOX',
-          style: TextStyle(
-            color: AppColors.pureWhite,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 2,
-          ),
-        ),
-        centerTitle: true,
-        elevation: 0,
+    return const Center(
+      child: Text(
+        'GIOCHI POPOLARI\n(TRA AMICI)',
+        textAlign: TextAlign.center,
+        style: TextStyle(color: AppColors.charcoal, fontWeight: FontWeight.bold),
       ),
-      body: viewModel.isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: AppColors.electricViolet),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              itemCount: viewModel.games.length,
-              itemBuilder: (context, index) {
-                final game = viewModel.games[index];
-                // Richiamiamo il widget GameCard creato in precedenza
-                return GameCard(game: game);
-              },
-            ),
-    );  
+    );
+  }
+}
 
+class PopularListsTab extends StatelessWidget {
+  const PopularListsTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'LISTE POPOLARI\n(PIÙ UPVOTE)',
+        textAlign: TextAlign.center,
+        style: TextStyle(color: AppColors.charcoal, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
+class PopularReviewsTab extends StatelessWidget {
+  const PopularReviewsTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'REVIEW POPOLARI\n(PIÙ LIKE)',
+        textAlign: TextAlign.center,
+        style: TextStyle(color: AppColors.charcoal, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
+class MyFeedTab extends StatelessWidget {
+  const MyFeedTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'LE MIE REVIEW\n(CRONOLOGIA)',
+        textAlign: TextAlign.center,
+        style: TextStyle(color: AppColors.charcoal, fontWeight: FontWeight.bold),
+      ),
+    );
   }
 }

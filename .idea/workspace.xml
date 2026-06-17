@@ -5,33 +5,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="12c242b1-67c0-4b4b-aec1-02941e8a6a2b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/lib/data/services/igdb_service.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/domain/models/review.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/ui/core/widgets/main_navigation_screen.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/ui/details/widgets/game_detail_screen.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/ui/details/widgets/review_dialog.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/ui/profile/view_model/user_view_model.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/ui/profile/widgets/profile_screen.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/ui/search/view_model/search_view_model.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/ui/search/widgets/game_search_screen.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mockups/all-my-trophies.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mockups/to-play.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mockups/trophies.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/data/repositories/user_repository.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/data/services/supabase_service.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/domain/models/auth_user.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/ui/auth/view_model/auth_view_model.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/ui/auth/widgets/login_screen.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/ui/auth/widgets/signup_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/android/gradle.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gamebox.iml" beforeDir="false" afterPath="$PROJECT_DIR$/gamebox.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/data/repositories/. copy.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/data/services/. copy.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/domain/models/. copy.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/domain/models/diary_entry.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/domain/models/game_ref.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/domain/models/models.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/data/repositories/game_repository.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/data/repositories/game_repository.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/data/services/igdb_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/data/services/igdb_service.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/core/themes/. copy.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/nav_bar/viewmodels/. copy.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/nav_bar/widgets/..txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ui/details/widgets/game_detail_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/details/widgets/game_detail_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ui/details/widgets/review_dialog.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/details/widgets/review_dialog.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ui/home/view_model/home_view_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/home/view_model/home_view_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ui/home/widgets/home_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/home/widgets/home_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ui/profile/view_model/user_view_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/profile/view_model/user_view_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ui/profile/widgets/profile_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/profile/widgets/profile_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/linux/flutter/generated_plugins.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/widget_test.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/windows/flutter/generated_plugins.cmake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,8 +55,18 @@
       </file>
     </leaf>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0,
@@ -74,25 +85,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Flutter.main.dart.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
-    "io.flutter.project.isFirstOpen": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/user/Desktop/Progetto Mobile/Codice Progetto/Gamebox/mockups",
-    "settings.editor.selected.configurable": "dart.settings",
-    "show.migrate.to.gradle.popup": "false"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Flutter.main.dart.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;io.flutter.project.isFirstOpen&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/user/Desktop/Progetto Mobile/Codice Progetto/Gamebox/mockups&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;templates.modelproviders.configurable&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\user\Desktop\Progetto Mobile\Codice Progetto\Gamebox\mockups" />
@@ -135,8 +146,18 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/lib/main.dart</url>
-          <line>10</line>
+          <line>14</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/ui/profile/view_model/user_view_model.dart</url>
+          <line>15</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/ui/profile/view_model/user_view_model.dart</url>
+          <line>23</line>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

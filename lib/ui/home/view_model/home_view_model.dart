@@ -14,7 +14,7 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<void> fetchGames() async {
     _isLoading = true;
-    notifyListeners(); //Mostra lo spinner nella UI
+    notifyListeners();
 
     try {
       _games = await _repository.getHomeGames();
@@ -22,7 +22,7 @@ class HomeViewModel extends ChangeNotifier {
       debugPrint("Errore: $e");
     } finally {
       _isLoading = false;
-      notifyListeners(); //Mostra i dati
+      notifyListeners();
     }
   }
 }

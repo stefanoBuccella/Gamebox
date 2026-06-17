@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../domain/models/game.dart';
-import '../../../domain/models/review.dart';
 import '../../core/theme/app_colors.dart';
 import '../../profile/view_model/user_view_model.dart';
 
@@ -19,7 +18,6 @@ class _ReviewDialogState extends State<ReviewDialog> {
 
   void _updateRating(Offset localPosition, double maxWidth) {
     final double percent = localPosition.dx / maxWidth;
-    // Calcoliamo il rating con precisione di 0.5 stelle (range 0.0 - 5.0)
     double newRating = (percent * 5 * 2).round() / 2;
     if (newRating < 0) newRating = 0;
     if (newRating > 5) newRating = 5;
@@ -42,7 +40,6 @@ class _ReviewDialogState extends State<ReviewDialog> {
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: AppColors.pureWhite, fontWeight: FontWeight.bold, fontSize: 18)),
             const SizedBox(height: 24),
-            // Widget per il rating con supporto al trascinamento e mezzi voti
             LayoutBuilder(
               builder: (context, constraints) {
                 return GestureDetector(
@@ -59,21 +56,14 @@ class _ReviewDialogState extends State<ReviewDialog> {
                       } else {
                         icon = Icons.star_border;
                       }
-                      return Icon(
-                        icon,
-                        color: AppColors.electricViolet,
-                        size: 40,
-                      );
+                      return Icon(icon, color: AppColors.electricViolet, size: 40);
                     }),
                   ),
                 );
               },
             ),
             const SizedBox(height: 8),
-            Text(
-              _rating.toString(),
-              style: const TextStyle(color: AppColors.electricViolet, fontWeight: FontWeight.bold, fontSize: 16),
-            ),
+            Text(_rating.toString(), style: const TextStyle(color: AppColors.electricViolet, fontWeight: FontWeight.bold, fontSize: 16)),
             const SizedBox(height: 16),
             TextField(
               controller: _noteController,
@@ -82,22 +72,20 @@ class _ReviewDialogState extends State<ReviewDialog> {
               decoration: const InputDecoration(
                 hintText: 'Scrivi una nota...',
                 hintStyle: TextStyle(color: AppColors.charcoal),
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.charcoal)),
-                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.electricViolet)),
               ),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () {
-                final review = Review(
-                  gameId: widget.game.id,
-                  rating: _rating,
-                  note: _noteController.text,
-                  createdAt: DateTime.now(),
+              onPressed: () async {
+                await context.read<UserViewModel>().addToDiary(
+                  widget.game,
+                  _rating,
+                  _noteController.text,
                 );
-                context.read<UserViewModel>().addToDiary(widget.game, review);
-                Navigator.pop(context); // Chiude il dialog
-                Navigator.pop(context); // Torna alla ricerca o profilo
+                if (mounted) {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                }
               },
               style: ElevatedButton.styleFrom(backgroundColor: AppColors.electricViolet),
               child: const Text('Salva', style: TextStyle(color: AppColors.pureWhite)),

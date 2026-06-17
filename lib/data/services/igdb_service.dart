@@ -41,7 +41,7 @@ class IgdbService {
     debugPrint('Ricerca gioco: $query');
     
     if (_clientId == null || _clientId!.isEmpty) {
-      debugPrint('Client ID mancante, utilizzo dati MOCK');
+      debugPrint('Client ID mancante');
       return _getMockGames();
     }
 
@@ -50,7 +50,7 @@ class IgdbService {
     }
 
     if (_accessToken == null) {
-      debugPrint('Access Token non disponibile, utilizzo dati MOCK');
+      debugPrint('Access Token non disponibile');
       return _getMockGames();
     }
 
