@@ -4,17 +4,27 @@ import '../../../domain/models/game.dart';
 import '../../core/theme/app_colors.dart';
 import '../../profile/view_model/user_view_model.dart';
 
+import '../../../domain/models/diary_entry.dart';
+
 class ReviewDialog extends StatefulWidget {
   final Game game;
-  const ReviewDialog({super.key, required this.game});
+  final DiaryEntry? existingEntry;
+  const ReviewDialog({super.key, required this.game, this.existingEntry});
 
   @override
   State<ReviewDialog> createState() => _ReviewDialogState();
 }
 
 class _ReviewDialogState extends State<ReviewDialog> {
-  double _rating = 0;
-  final TextEditingController _noteController = TextEditingController();
+  late double _rating;
+  late TextEditingController _noteController;
+
+  @override
+  void initState() {
+    super.initState();
+    _rating = widget.existingEntry?.rating ?? 0;
+    _noteController = TextEditingController(text: widget.existingEntry?.reviewText ?? '');
+  }
 
   void _updateRating(Offset localPosition, double maxWidth) {
     final double percent = localPosition.dx / maxWidth;
@@ -56,21 +66,21 @@ class _ReviewDialogState extends State<ReviewDialog> {
                       } else {
                         icon = Icons.star_border;
                       }
-                      return Icon(icon, color: AppColors.electricViolet, size: 40);
+                      return Icon(icon, color: AppColors.cyberCyan, size: 40);
                     }),
                   ),
                 );
               },
             ),
             const SizedBox(height: 8),
-            Text(_rating.toString(), style: const TextStyle(color: AppColors.electricViolet, fontWeight: FontWeight.bold, fontSize: 16)),
+            Text(_rating.toString(), style: const TextStyle(color: AppColors.cyberCyan, fontWeight: FontWeight.bold, fontSize: 16)),
             const SizedBox(height: 16),
             TextField(
               controller: _noteController,
               maxLines: 4,
               style: const TextStyle(color: AppColors.pureWhite),
               decoration: const InputDecoration(
-                hintText: 'Scrivi una nota...',
+                hintText: 'Write a note...',
                 hintStyle: TextStyle(color: AppColors.charcoal),
               ),
             ),
@@ -83,12 +93,11 @@ class _ReviewDialogState extends State<ReviewDialog> {
                   _noteController.text,
                 );
                 if (mounted) {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  Navigator.pop(context, true);
                 }
               },
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.electricViolet),
-              child: const Text('Salva', style: TextStyle(color: AppColors.pureWhite)),
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.cyberCyan),
+              child: const Text('Save', style: TextStyle(color: AppColors.pureWhite)),
             ),
           ],
         ),

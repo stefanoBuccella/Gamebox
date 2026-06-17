@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../data/repositories/user_repository.dart';
 import '../../../domain/models/game.dart';
+import '../../../domain/models/diary_entry.dart';
 
 class UserViewModel extends ChangeNotifier {
   final UserRepository _repository;
@@ -9,19 +10,35 @@ class UserViewModel extends ChangeNotifier {
   
   UserViewModel(this._repository, this._supabase) {
     _init();
+    _supabase.auth.onAuthStateChange.listen((data) {
+      if (data.event == AuthChangeEvent.signedIn || data.event == AuthChangeEvent.initialSession) {
+        fetchAllData();
+      } else if (data.event == AuthChangeEvent.signedOut) {
+        _clearData();
+      }
+    });
   }
 
   String? _username;
-  List<Game> _diary = [];
+  List<DiaryEntry> _diary = [];
   List<Game> _toPlay = [];
   List<Game> _top3Games = [];
   bool _isLoading = false;
 
   String? get username => _username;
-  List<Game> get diary => _diary;
+  List<DiaryEntry> get diary => _diary;
   List<Game> get toPlay => _toPlay;
   List<Game> get top3Games => _top3Games;
   bool get isLoading => _isLoading;
+
+  void _clearData() {
+    _username = null;
+    _diary = [];
+    _toPlay = [];
+    _top3Games = [];
+    _isLoading = false;
+    notifyListeners();
+  }
 
   Future<void> _init() async {
     await fetchAllData();
@@ -29,7 +46,10 @@ class UserViewModel extends ChangeNotifier {
 
   Future<void> fetchAllData() async {
     final user = _supabase.auth.currentUser;
-    if (user == null) return;
+    if (user == null) {
+      _clearData();
+      return;
+    }
 
     _isLoading = true;
     notifyListeners();
@@ -47,7 +67,7 @@ class UserViewModel extends ChangeNotifier {
       }
 
       final diaryData = await _repository.getDiary(user.id);
-      _diary = diaryData.map((d) => Game.fromJson(d['game_json'])).toList();
+      _diary = diaryData.map((d) => DiaryEntry.fromJson(d)).toList();
 
       final toPlayData = await _repository.getToPlay(user.id);
       _toPlay = toPlayData.map((t) => Game.fromJson(t['game_json'])).toList();
@@ -81,6 +101,7 @@ class UserViewModel extends ChangeNotifier {
   }
 
   bool isInToPlay(String gameId) => _toPlay.any((g) => g.id == gameId);
+  bool isInDiary(String gameId) => _diary.any((d) => d.game.id == gameId);
 
   Future<void> toggleToPlay(Game game) async {
     try {
@@ -100,15 +121,46 @@ class UserViewModel extends ChangeNotifier {
   Future<void> addToDiary(Game game, double rating, String note) async {
     try {
       await _repository.saveReview(game, rating, note);
-      // Ricarica il diario, ma NON tocca la Top 3
       final user = _supabase.auth.currentUser;
       if (user != null) {
         final diaryData = await _repository.getDiary(user.id);
-        _diary = diaryData.map((d) => Game.fromJson(d['game_json'])).toList();
+        _diary = diaryData.map((d) => DiaryEntry.fromJson(d)).toList();
         notifyListeners();
       }
     } catch (e) {
       debugPrint("Errore salvataggio Diario: $e");
+    }
+  }
+
+  Future<void> deleteFromDiary(String gameId) async {
+    try {
+      await _repository.deleteReview(gameId);
+      _diary.removeWhere((d) => d.game.id == gameId);
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Errore eliminazione Diario: $e");
+    }
+  }
+
+  Future<List<DiaryEntry>> getGameReviews(String gameId) async {
+    return await _repository.getGameReviews(gameId);
+  }
+
+  Future<void> toggleLike(DiaryEntry entry) async {
+    try {
+      await _repository.toggleLike(entry.id, entry.isLikedByMe);
+
+      final index = _diary.indexWhere((d) => d.id == entry.id);
+      if (index != -1) {
+        final current = _diary[index];
+        _diary[index] = current.copyWith(
+          isLikedByMe: !current.isLikedByMe,
+          likesCount: current.isLikedByMe ? current.likesCount - 1 : current.likesCount + 1,
+        );
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint("Error toggling like: $e");
     }
   }
 }

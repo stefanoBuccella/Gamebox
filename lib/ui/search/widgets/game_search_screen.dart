@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../data/repositories/game_repository.dart';
 import '../../core/theme/app_colors.dart';
 import '../../home/widgets/game_card.dart';
 import '../../details/widgets/game_detail_screen.dart';
@@ -24,7 +25,7 @@ class _GameSearchScreenState extends State<GameSearchScreen> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => SearchViewModel(),
+      create: (context) => SearchViewModel(context.read<GameRepository>()),
       child: Consumer<SearchViewModel>(
         builder: (context, viewModel, child) {
           return Scaffold(
@@ -35,7 +36,7 @@ class _GameSearchScreenState extends State<GameSearchScreen> {
                 controller: _controller,
                 style: const TextStyle(color: AppColors.pureWhite),
                 decoration: const InputDecoration(
-                  hintText: 'Cerca un gioco...',
+                  hintText: 'Search a game...',
                   hintStyle: TextStyle(color: AppColors.charcoal),
                   border: InputBorder.none,
                 ),
@@ -43,17 +44,17 @@ class _GameSearchScreenState extends State<GameSearchScreen> {
               ),
               actions: [
                 IconButton(
-                  icon: const Icon(Icons.search, color: AppColors.electricViolet),
+                  icon: const Icon(Icons.search, color: AppColors.cyberCyan),
                   onPressed: () => viewModel.search(_controller.text),
                 ),
               ],
             ),
             body: viewModel.isLoading
-                ? const Center(child: CircularProgressIndicator(color: AppColors.electricViolet))
+                ? const Center(child: CircularProgressIndicator(color: AppColors.cyberCyan))
                 : viewModel.searchResults.isEmpty && _controller.text.isNotEmpty
                     ? const Center(
                         child: Text(
-                          'Nessun risultato trovato o errore di connessione.\nControlla i log e la connessione internet.',
+                          'No results found or connection error.\nCheck logs and internet connection.',
                           textAlign: TextAlign.center,
                           style: TextStyle(color: AppColors.slateGray),
                         ),

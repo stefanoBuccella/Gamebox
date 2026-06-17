@@ -37,8 +37,10 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Image.asset('assets/images/logo.png', height: 100),
+                const SizedBox(height: 24),
                 const Text(
-                  "UNISCITI A GAMEBOX",
+                  "JOIN GAMEBOX",
                   style: TextStyle(
                     fontSize: 24,
                     color: Colors.white,
@@ -91,7 +93,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             } else if (!success && mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text(viewModel.errorMessage ?? "Errore di registrazione"),
+                                  content: Text(viewModel.errorMessage ?? "Registration error"),
                                   backgroundColor: Colors.redAccent,
                                 ),
                               );
@@ -103,15 +105,15 @@ class _SignupScreenState extends State<SignupScreen> {
                             width: 20,
                             child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                           )
-                        : const Text("REGISTRATI", style: TextStyle(fontWeight: FontWeight.bold)),
+                        : const Text("SIGN UP", style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: const Text(
-                    "Hai già un account? Accedi",
-                    style: TextStyle(color: AppColors.electricViolet),
+                    "Already have an account? Sign In",
+                    style: TextStyle(color: AppColors.cyberCyan),
                   ),
                 ),
               ],

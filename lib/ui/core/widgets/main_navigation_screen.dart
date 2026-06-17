@@ -1,45 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../home/widgets/home_screen.dart';
 import '../../profile/widgets/profile_screen.dart';
 import '../../search/widgets/game_search_screen.dart';
 import '../theme/app_colors.dart';
+import '../view_model/navigation_view_model.dart';
 
-class MainNavigationScreen extends StatefulWidget {
+class MainNavigationScreen extends StatelessWidget {
   const MainNavigationScreen({super.key});
 
-  @override
-  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
-}
-
-class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _selectedIndex = 2; // Impostato a 2 per aprire il Profilo come tab iniziale
-
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const GameSearchScreen(),
-    const ProfileScreen(),
+  final List<Widget> _screens = const [
+    HomeScreen(),
+    GameSearchScreen(),
+    ProfileScreen(),
   ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
+    final navVM = context.watch<NavigationViewModel>();
+
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: _screens[navVM.selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppColors.gunmetal,
-        currentIndex: _selectedIndex,
-        selectedItemColor: AppColors.electricViolet,
+        currentIndex: navVM.selectedIndex,
+        selectedItemColor: AppColors.cyberCyan,
         unselectedItemColor: AppColors.pureWhite,
-        onTap: _onItemTapped,
+        onTap: (index) => navVM.setIndex(index),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Cerca'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profilo'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );

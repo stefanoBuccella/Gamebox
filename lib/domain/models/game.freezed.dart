@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Game {
 
- String get id; String get title; String? get imageUrl; String? get publisher; List<String> get platforms; double? get rating; int? get releaseYear; String? get summary;
+ String get id; String get title; String? get imageUrl; String? get publisher; List<String> get platforms; List<String> get genres; double? get rating; int? get releaseYear; String? get summary;
 /// Create a copy of Game
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $GameCopyWith<Game> get copyWith => _$GameCopyWithImpl<Game>(this as Game, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Game&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.publisher, publisher) || other.publisher == publisher)&&const DeepCollectionEquality().equals(other.platforms, platforms)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.releaseYear, releaseYear) || other.releaseYear == releaseYear)&&(identical(other.summary, summary) || other.summary == summary));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Game&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.publisher, publisher) || other.publisher == publisher)&&const DeepCollectionEquality().equals(other.platforms, platforms)&&const DeepCollectionEquality().equals(other.genres, genres)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.releaseYear, releaseYear) || other.releaseYear == releaseYear)&&(identical(other.summary, summary) || other.summary == summary));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,imageUrl,publisher,const DeepCollectionEquality().hash(platforms),rating,releaseYear,summary);
+int get hashCode => Object.hash(runtimeType,id,title,imageUrl,publisher,const DeepCollectionEquality().hash(platforms),const DeepCollectionEquality().hash(genres),rating,releaseYear,summary);
 
 @override
 String toString() {
-  return 'Game(id: $id, title: $title, imageUrl: $imageUrl, publisher: $publisher, platforms: $platforms, rating: $rating, releaseYear: $releaseYear, summary: $summary)';
+  return 'Game(id: $id, title: $title, imageUrl: $imageUrl, publisher: $publisher, platforms: $platforms, genres: $genres, rating: $rating, releaseYear: $releaseYear, summary: $summary)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $GameCopyWith<$Res>  {
   factory $GameCopyWith(Game value, $Res Function(Game) _then) = _$GameCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, String? imageUrl, String? publisher, List<String> platforms, double? rating, int? releaseYear, String? summary
+ String id, String title, String? imageUrl, String? publisher, List<String> platforms, List<String> genres, double? rating, int? releaseYear, String? summary
 });
 
 
@@ -65,13 +65,14 @@ class _$GameCopyWithImpl<$Res>
 
 /// Create a copy of Game
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? imageUrl = freezed,Object? publisher = freezed,Object? platforms = null,Object? rating = freezed,Object? releaseYear = freezed,Object? summary = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? imageUrl = freezed,Object? publisher = freezed,Object? platforms = null,Object? genres = null,Object? rating = freezed,Object? releaseYear = freezed,Object? summary = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,publisher: freezed == publisher ? _self.publisher : publisher // ignore: cast_nullable_to_non_nullable
 as String?,platforms: null == platforms ? _self.platforms : platforms // ignore: cast_nullable_to_non_nullable
+as List<String>,genres: null == genres ? _self.genres : genres // ignore: cast_nullable_to_non_nullable
 as List<String>,rating: freezed == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
 as double?,releaseYear: freezed == releaseYear ? _self.releaseYear : releaseYear // ignore: cast_nullable_to_non_nullable
 as int?,summary: freezed == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable
@@ -160,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String? imageUrl,  String? publisher,  List<String> platforms,  double? rating,  int? releaseYear,  String? summary)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String? imageUrl,  String? publisher,  List<String> platforms,  List<String> genres,  double? rating,  int? releaseYear,  String? summary)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Game() when $default != null:
-return $default(_that.id,_that.title,_that.imageUrl,_that.publisher,_that.platforms,_that.rating,_that.releaseYear,_that.summary);case _:
+return $default(_that.id,_that.title,_that.imageUrl,_that.publisher,_that.platforms,_that.genres,_that.rating,_that.releaseYear,_that.summary);case _:
   return orElse();
 
 }
@@ -181,10 +182,10 @@ return $default(_that.id,_that.title,_that.imageUrl,_that.publisher,_that.platfo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String? imageUrl,  String? publisher,  List<String> platforms,  double? rating,  int? releaseYear,  String? summary)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String? imageUrl,  String? publisher,  List<String> platforms,  List<String> genres,  double? rating,  int? releaseYear,  String? summary)  $default,) {final _that = this;
 switch (_that) {
 case _Game():
-return $default(_that.id,_that.title,_that.imageUrl,_that.publisher,_that.platforms,_that.rating,_that.releaseYear,_that.summary);case _:
+return $default(_that.id,_that.title,_that.imageUrl,_that.publisher,_that.platforms,_that.genres,_that.rating,_that.releaseYear,_that.summary);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +202,10 @@ return $default(_that.id,_that.title,_that.imageUrl,_that.publisher,_that.platfo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String? imageUrl,  String? publisher,  List<String> platforms,  double? rating,  int? releaseYear,  String? summary)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String? imageUrl,  String? publisher,  List<String> platforms,  List<String> genres,  double? rating,  int? releaseYear,  String? summary)?  $default,) {final _that = this;
 switch (_that) {
 case _Game() when $default != null:
-return $default(_that.id,_that.title,_that.imageUrl,_that.publisher,_that.platforms,_that.rating,_that.releaseYear,_that.summary);case _:
+return $default(_that.id,_that.title,_that.imageUrl,_that.publisher,_that.platforms,_that.genres,_that.rating,_that.releaseYear,_that.summary);case _:
   return null;
 
 }
@@ -216,7 +217,7 @@ return $default(_that.id,_that.title,_that.imageUrl,_that.publisher,_that.platfo
 @JsonSerializable()
 
 class _Game implements Game {
-  const _Game({required this.id, required this.title, this.imageUrl, this.publisher, final  List<String> platforms = const [], this.rating, this.releaseYear, this.summary}): _platforms = platforms;
+  const _Game({required this.id, required this.title, this.imageUrl, this.publisher, final  List<String> platforms = const [], final  List<String> genres = const [], this.rating, this.releaseYear, this.summary}): _platforms = platforms,_genres = genres;
   factory _Game.fromJson(Map<String, dynamic> json) => _$GameFromJson(json);
 
 @override final  String id;
@@ -228,6 +229,13 @@ class _Game implements Game {
   if (_platforms is EqualUnmodifiableListView) return _platforms;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_platforms);
+}
+
+ final  List<String> _genres;
+@override@JsonKey() List<String> get genres {
+  if (_genres is EqualUnmodifiableListView) return _genres;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_genres);
 }
 
 @override final  double? rating;
@@ -247,16 +255,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Game&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.publisher, publisher) || other.publisher == publisher)&&const DeepCollectionEquality().equals(other._platforms, _platforms)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.releaseYear, releaseYear) || other.releaseYear == releaseYear)&&(identical(other.summary, summary) || other.summary == summary));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Game&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.publisher, publisher) || other.publisher == publisher)&&const DeepCollectionEquality().equals(other._platforms, _platforms)&&const DeepCollectionEquality().equals(other._genres, _genres)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.releaseYear, releaseYear) || other.releaseYear == releaseYear)&&(identical(other.summary, summary) || other.summary == summary));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,imageUrl,publisher,const DeepCollectionEquality().hash(_platforms),rating,releaseYear,summary);
+int get hashCode => Object.hash(runtimeType,id,title,imageUrl,publisher,const DeepCollectionEquality().hash(_platforms),const DeepCollectionEquality().hash(_genres),rating,releaseYear,summary);
 
 @override
 String toString() {
-  return 'Game(id: $id, title: $title, imageUrl: $imageUrl, publisher: $publisher, platforms: $platforms, rating: $rating, releaseYear: $releaseYear, summary: $summary)';
+  return 'Game(id: $id, title: $title, imageUrl: $imageUrl, publisher: $publisher, platforms: $platforms, genres: $genres, rating: $rating, releaseYear: $releaseYear, summary: $summary)';
 }
 
 
@@ -267,7 +275,7 @@ abstract mixin class _$GameCopyWith<$Res> implements $GameCopyWith<$Res> {
   factory _$GameCopyWith(_Game value, $Res Function(_Game) _then) = __$GameCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, String? imageUrl, String? publisher, List<String> platforms, double? rating, int? releaseYear, String? summary
+ String id, String title, String? imageUrl, String? publisher, List<String> platforms, List<String> genres, double? rating, int? releaseYear, String? summary
 });
 
 
@@ -284,13 +292,14 @@ class __$GameCopyWithImpl<$Res>
 
 /// Create a copy of Game
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? imageUrl = freezed,Object? publisher = freezed,Object? platforms = null,Object? rating = freezed,Object? releaseYear = freezed,Object? summary = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? imageUrl = freezed,Object? publisher = freezed,Object? platforms = null,Object? genres = null,Object? rating = freezed,Object? releaseYear = freezed,Object? summary = freezed,}) {
   return _then(_Game(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,publisher: freezed == publisher ? _self.publisher : publisher // ignore: cast_nullable_to_non_nullable
 as String?,platforms: null == platforms ? _self._platforms : platforms // ignore: cast_nullable_to_non_nullable
+as List<String>,genres: null == genres ? _self._genres : genres // ignore: cast_nullable_to_non_nullable
 as List<String>,rating: freezed == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
 as double?,releaseYear: freezed == releaseYear ? _self.releaseYear : releaseYear // ignore: cast_nullable_to_non_nullable
 as int?,summary: freezed == summary ? _self.summary : summary // ignore: cast_nullable_to_non_nullable

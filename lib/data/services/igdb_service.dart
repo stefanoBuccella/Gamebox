@@ -57,7 +57,7 @@ class IgdbService {
     try {
       final response = await _dio.post(
         '/games',
-        data: 'search "$query"; fields name, summary, cover.url, involved_companies.company.name, platforms.name, total_rating, first_release_date; limit 10;',
+        data: 'search "$query"; fields name, summary, cover.url, involved_companies.company.name, platforms.name, total_rating, first_release_date, genres.name; limit 10;',
         options: Options(
           headers: {
             'Client-ID': _clientId,

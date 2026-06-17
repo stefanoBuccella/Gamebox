@@ -5,7 +5,10 @@ import '../view_model/user_view_model.dart';
 import '../../auth/view_model/auth_view_model.dart';
 import '../../auth/widgets/login_screen.dart';
 import '../../details/widgets/game_detail_screen.dart';
+import '../../details/widgets/review_dialog.dart';
+import '../../core/view_model/navigation_view_model.dart';
 import '../../../domain/models/game.dart';
+import '../../../domain/models/diary_entry.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -104,7 +107,7 @@ class OverviewTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userViewModel = context.watch<UserViewModel>();
-    final username = userViewModel.username ?? 'Utente';
+    final username = userViewModel.username ?? 'User';
     final top3 = userViewModel.top3Games;
 
     return SingleChildScrollView(
@@ -241,7 +244,7 @@ class OverviewTab extends StatelessWidget {
 
     if (diary.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Il tuo diario è vuoto. Aggiungi prima un gioco!')),
+        const SnackBar(content: Text('Your diary is empty. Add a game first!')),
       );
       return;
     }
@@ -256,7 +259,7 @@ class OverviewTab extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text("SELEZIONA DALLA TUA LIBRERIA", 
+              const Text("SELECT FROM YOUR LIBRARY",
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
               const SizedBox(height: 20),
               SizedBox(
@@ -266,10 +269,10 @@ class OverviewTab extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: diary.length,
                   itemBuilder: (context, index) {
-                    final game = diary[index];
+                    final entry = diary[index];
                     return GestureDetector(
                       onTap: () {
-                        userVM.addToTop3(game);
+                        userVM.addToTop3(entry.game);
                         Navigator.pop(context);
                       },
                       child: Container(
@@ -277,8 +280,8 @@ class OverviewTab extends StatelessWidget {
                         margin: const EdgeInsets.only(right: 12),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
-                          image: game.imageUrl != null 
-                              ? DecorationImage(image: NetworkImage(game.imageUrl!), fit: BoxFit.cover)
+                          image: entry.game.imageUrl != null 
+                              ? DecorationImage(image: NetworkImage(entry.game.imageUrl!), fit: BoxFit.cover)
                               : null,
                           color: AppColors.charcoal,
                         ),
@@ -350,7 +353,144 @@ class DiaryTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final diary = context.watch<UserViewModel>().diary;
-    return _buildGameGrid(context, diary, "IL TUO DIARIO È VUOTO");
+    if (diary.isEmpty) {
+      return _buildEmptyState(context, "YOUR DIARY IS EMPTY");
+    }
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 0.7,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+      ),
+      itemCount: diary.length + 1,
+      itemBuilder: (context, index) {
+        if (index == 0) return _buildAddButton(context);
+        final entry = diary[index - 1];
+        return GestureDetector(
+          onTap: () => _showReviewDetails(context, entry),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: entry.game.imageUrl != null 
+                      ? Image.network(entry.game.imageUrl!, fit: BoxFit.cover)
+                      : Container(color: AppColors.charcoal),
+                ),
+              ),
+              Positioned(
+                bottom: 4,
+                right: 4,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: AppColors.cyberCyan,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    entry.rating.toString(),
+                    style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showReviewDetails(BuildContext context, DiaryEntry entry) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.gunmetal,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: entry.game.imageUrl != null 
+                        ? Image.network(entry.game.imageUrl!, width: 60, height: 80, fit: BoxFit.cover)
+                        : Container(width: 60, height: 80, color: AppColors.charcoal),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(entry.game.title.toUpperCase(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+                        const SizedBox(height: 4),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.star, color: AppColors.cyberCyan, size: 16),
+                                const SizedBox(width: 4),
+                                Text(entry.rating.toString(), style: const TextStyle(color: AppColors.cyberCyan, fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Icon(Icons.favorite, color: Colors.redAccent, size: 16),
+                                const SizedBox(width: 4),
+                                Text("${entry.likesCount}", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              const Text("YOUR REVIEW:", style: TextStyle(color: AppColors.charcoal, fontSize: 12, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              Text(entry.reviewText.isEmpty ? "No notes added." : entry.reviewText, style: const TextStyle(color: Colors.white)),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        showDialog(
+                          context: context,
+                          builder: (_) => ReviewDialog(game: entry.game, existingEntry: entry),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(backgroundColor: AppColors.cyberCyan),
+                      child: const Text("EDIT REVIEW", style: TextStyle(color: Colors.white, fontSize: 12)),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.read<UserViewModel>().deleteFromDiary(entry.game.id);
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+                      child: const Text("REMOVE", style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -360,35 +500,71 @@ class ToPlayTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final toPlay = context.watch<UserViewModel>().toPlay;
-    return _buildGameGrid(context, toPlay, "LA TUA LISTA TO PLAY È VUOTA");
+    if (toPlay.isEmpty) {
+      return _buildEmptyState(context, "YOUR TO PLAY LIST IS EMPTY");
+    }
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 0.7,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+      ),
+      itemCount: toPlay.length + 1,
+      itemBuilder: (context, index) {
+        if (index == 0) return _buildAddButton(context);
+        final game = toPlay[index - 1];
+        return GestureDetector(
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => GameDetailScreen(game: game))),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: game.imageUrl != null 
+                ? Image.network(game.imageUrl!, fit: BoxFit.cover)
+                : Container(color: AppColors.charcoal),
+          ),
+        );
+      },
+    );
   }
 }
 
-Widget _buildGameGrid(BuildContext context, List<Game> games, String emptyMsg) {
-  if (games.isEmpty) {
-    return Center(child: Text(emptyMsg, style: const TextStyle(color: AppColors.charcoal, fontWeight: FontWeight.bold)));
-  }
-  return GridView.builder(
-    padding: const EdgeInsets.all(16),
-    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 3,
-      childAspectRatio: 0.7,
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-    ),
-    itemCount: games.length,
-    itemBuilder: (context, index) {
-      final game = games[index];
-      return GestureDetector(
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => GameDetailScreen(game: game))),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: game.imageUrl != null 
-              ? Image.network(game.imageUrl!, fit: BoxFit.cover)
-              : Container(color: AppColors.charcoal),
+Widget _buildEmptyState(BuildContext context, String emptyMsg) {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          emptyMsg,
+          textAlign: TextAlign.center,
+          style: const TextStyle(color: AppColors.charcoal, fontWeight: FontWeight.bold),
         ),
-      );
-    },
+        const SizedBox(height: 20),
+        ElevatedButton.icon(
+          onPressed: () => context.read<NavigationViewModel>().setIndex(1),
+          icon: const Icon(Icons.search),
+          label: const Text("SEARCH A GAME"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.cyberCyan,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _buildAddButton(BuildContext context) {
+  return GestureDetector(
+    onTap: () => context.read<NavigationViewModel>().setIndex(1),
+    child: Container(
+      decoration: BoxDecoration(
+        color: AppColors.gunmetal.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.charcoal.withOpacity(0.5), width: 1, style: BorderStyle.solid),
+      ),
+      child: const Icon(Icons.add, color: AppColors.charcoal, size: 30),
+    ),
   );
 }
 
@@ -396,6 +572,6 @@ class ListsPlaceholderTab extends StatelessWidget {
   const ListsPlaceholderTab({super.key});
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('LE TUE LISTE\n(PROSSIMO SPRINT)', textAlign: TextAlign.center, style: TextStyle(color: AppColors.charcoal, fontWeight: FontWeight.bold)));
+    return const Center(child: Text('YOUR LISTS\n(COMING SOON)', textAlign: TextAlign.center, style: TextStyle(color: AppColors.charcoal, fontWeight: FontWeight.bold)));
   }
 }

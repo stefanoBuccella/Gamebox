@@ -11,6 +11,7 @@ abstract class Game with _$Game {
     String? imageUrl,
     String? publisher,
     @Default([]) List<String> platforms,
+    @Default([]) List<String> genres,
     double? rating,
     int? releaseYear,
     String? summary,

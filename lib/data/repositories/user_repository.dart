@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import '../services/supabase_service.dart';
 import '../../domain/models/game.dart';
+import '../../domain/models/diary_entry.dart';
 
 class UserRepository {
   final SupabaseService _service;
@@ -45,6 +46,17 @@ class UserRepository {
       rating: rating,
       reviewText: note,
     );
+  }
+
+  Future<void> deleteReview(String gameId) async => await _service.removeFromDiary(gameId);
+
+  Future<List<DiaryEntry>> getGameReviews(String gameId) async {
+    final data = await _service.fetchGameReviews(gameId);
+    return data.map((d) => DiaryEntry.fromJson(d)).toList();
+  }
+
+  Future<void> toggleLike(String reviewId, bool isLiked) async {
+    await _service.toggleLike(reviewId, isLiked);
   }
 
   // TO PLAY

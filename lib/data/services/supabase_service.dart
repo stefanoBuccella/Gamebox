@@ -46,9 +46,49 @@ class SupabaseService {
 
   Future<List<Map<String, dynamic>>> fetchUserDiary(String userId) async {
     return await client.from('diary')
-        .select()
+        .select('*, profiles(username)')
         .eq('user_id', userId)
         .order('created_at', ascending: false);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchGameReviews(String gameId) async {
+    try {
+      final userId = client.auth.currentUser?.id;
+      final query = client.from('diary')
+          .select('*, profiles(username), interactions!left(id)')
+          .eq('game_id', gameId);
+      
+      final response = await (userId != null 
+          ? query.eq('interactions.user_id', userId).eq('interactions.target_type', 'review')
+          : query);
+      
+      return response.map((item) {
+        final interactions = item['interactions'] as List?;
+        item['is_liked_by_me'] = interactions != null && interactions.isNotEmpty;
+        return item;
+      }).toList();
+    } catch (e) {
+      debugPrint('Error fetching reviews: $e');
+      return [];
+    }
+  }
+
+  Future<void> toggleLike(String reviewId, bool isLiked) async {
+    final userId = client.auth.currentUser?.id;
+    if (userId == null) return;
+
+    if (isLiked) {
+      await client.from('interactions').delete()
+          .eq('user_id', userId)
+          .eq('target_id', int.parse(reviewId))
+          .eq('target_type', 'review');
+    } else {
+      await client.from('interactions').insert({
+        'user_id': userId,
+        'target_id': int.parse(reviewId),
+        'target_type': 'review',
+      });
+    }
   }
 
   Future<void> saveToDiary({
@@ -67,6 +107,13 @@ class SupabaseService {
       'rating': rating,
       'review_text': reviewText,
     });
+  }
+
+  Future<void> removeFromDiary(String gameId) async {
+    final userId = client.auth.currentUser?.id;
+    if (userId == null) return;
+
+    await client.from('diary').delete().eq('user_id', userId).eq('game_id', gameId);
   }
 
 

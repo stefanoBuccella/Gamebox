@@ -29,12 +29,12 @@ class GameCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(game.title, style: const TextStyle(color: AppColors.pureWhite, fontWeight: FontWeight.bold)),
-                Text(game.publisher ?? '', style: const TextStyle(color: AppColors.electricViolet)),
+                Text(game.publisher ?? '', style: const TextStyle(color: AppColors.cyberCyan)),
               ],
             ),
           ),
           if (game.rating != null)
-            Text("${game.rating} ★", style: const TextStyle(color: AppColors.pureWhite)),
+            Text("${game.rating!.toStringAsFixed(1)} ★", style: const TextStyle(color: AppColors.pureWhite)),
         ],
       ),
     );

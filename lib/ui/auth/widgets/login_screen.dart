@@ -35,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.videogame_asset, size: 80, color: AppColors.electricViolet),
+                Image.asset('assets/images/logo.png', height: 120),
                 const SizedBox(height: 16),
                 const Text(
                   "GAMEBOX",
@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (!success && mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text(viewModel.errorMessage ?? "Errore di login"),
+                                  content: Text(viewModel.errorMessage ?? "Login error"),
                                   backgroundColor: Colors.redAccent,
                                 ),
                               );
@@ -92,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: 20,
                             child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                           )
-                        : const Text("ACCEDI", style: TextStyle(fontWeight: FontWeight.bold)),
+                        : const Text("SIGN IN", style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -105,12 +105,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   child: RichText(
                     text: const TextSpan(
-                      text: "Non hai un account? ",
+                      text: "Don't have an account? ",
                       style: TextStyle(color: AppColors.charcoal),
                       children: [
                         TextSpan(
-                          text: "Registrati",
-                          style: TextStyle(color: AppColors.electricViolet, fontWeight: FontWeight.bold),
+                          text: "Sign Up",
+                          style: TextStyle(color: AppColors.cyberCyan, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),

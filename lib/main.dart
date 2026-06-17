@@ -8,6 +8,7 @@ import 'data/services/supabase_service.dart';
 import 'ui/auth/view_model/auth_view_model.dart';
 import 'ui/home/view_model/home_view_model.dart';
 import 'ui/profile/view_model/user_view_model.dart';
+import 'ui/core/view_model/navigation_view_model.dart';
 import 'ui/auth/widgets/login_screen.dart';
 import 'ui/core/widgets/main_navigation_screen.dart';
 import 'ui/core/theme/app_colors.dart';
@@ -50,6 +51,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => UserViewModel(context.read<UserRepository>(), Supabase.instance.client),
         ),
+        ChangeNotifierProvider(
+          create: (context) => NavigationViewModel(),
+        ),
       ],
       child: MaterialApp(
         title: 'GameBox',
@@ -57,7 +61,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
           brightness: Brightness.dark,
-          primaryColor: AppColors.electricViolet,
+          primaryColor: AppColors.cyberCyan,
           scaffoldBackgroundColor: AppColors.voidBlack,
           inputDecorationTheme: const InputDecorationTheme(
             filled: true,
@@ -67,7 +71,7 @@ class MyApp extends StatelessWidget {
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.electricViolet,
+              backgroundColor: AppColors.cyberCyan,
               foregroundColor: AppColors.pureWhite,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
