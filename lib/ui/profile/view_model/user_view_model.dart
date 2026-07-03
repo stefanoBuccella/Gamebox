@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../data/repositories/user_repository.dart';
 import '../../../domain/models/game.dart';
 import '../../../domain/models/diary_entry.dart';
+import '../../../domain/models/user_list.dart';
 
 class UserViewModel extends ChangeNotifier {
   final UserRepository _repository;
@@ -22,12 +23,24 @@ class UserViewModel extends ChangeNotifier {
   String? _username;
   List<DiaryEntry> _diary = [];
   List<Game> _toPlay = [];
+  List<UserList> _myLists = [];
+  List<UserList> _publicLists = [];
   List<Game> _top3Games = [];
   bool _isLoading = false;
 
   String? get username => _username;
   List<DiaryEntry> get diary => _diary;
   List<Game> get toPlay => _toPlay;
+  List<UserList> get myLists => _myLists;
+  List<UserList> get publicLists {
+    final lists = List<UserList>.from(_publicLists);
+    lists.sort((a, b) {
+      final scoreA = a.upvotesCount - a.downvotesCount;
+      final scoreB = b.upvotesCount - b.downvotesCount;
+      return scoreB.compareTo(scoreA);
+    });
+    return lists;
+  }
   List<Game> get top3Games => _top3Games;
   bool get isLoading => _isLoading;
 
@@ -35,6 +48,8 @@ class UserViewModel extends ChangeNotifier {
     _username = null;
     _diary = [];
     _toPlay = [];
+    _myLists = [];
+    _publicLists = [];
     _top3Games = [];
     _isLoading = false;
     notifyListeners();
@@ -58,7 +73,6 @@ class UserViewModel extends ChangeNotifier {
       final profile = await _repository.getProfile(user.id);
       _username = profile?['username'] ?? user.userMetadata?['username'];
       
-      // Carica Top 3 Games dal profilo (tabella profiles - colonna top_games)
       final List<dynamic>? topGamesData = profile?['top_games'];
       if (topGamesData != null) {
         _top3Games = topGamesData.map((g) => Game.fromJson(g as Map<String, dynamic>)).toList();
@@ -71,6 +85,19 @@ class UserViewModel extends ChangeNotifier {
 
       final toPlayData = await _repository.getToPlay(user.id);
       _toPlay = toPlayData.map((t) => Game.fromJson(t['game_json'])).toList();
+
+      try {
+        debugPrint("Fetching lists for user: ${user.id}");
+        _myLists = await _repository.getUserLists(user.id);
+        debugPrint("My lists count: ${_myLists.length}");
+        
+        _publicLists = await _repository.getPublicLists();
+        debugPrint("Public lists count: ${_publicLists.length}");
+      } catch (listError) {
+        debugPrint("Error loading lists specific: $listError");
+        _myLists = [];
+        _publicLists = [];
+      }
       
     } catch (e) {
       debugPrint("Errore fetch dati: $e");
@@ -118,9 +145,9 @@ class UserViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> addToDiary(Game game, double rating, String note) async {
+  Future<void> addToDiary(Game game, double rating, String note, {String? id}) async {
     try {
-      await _repository.saveReview(game, rating, note);
+      await _repository.saveReview(game, rating, note, id: id);
       final user = _supabase.auth.currentUser;
       if (user != null) {
         final diaryData = await _repository.getDiary(user.id);
@@ -149,18 +176,45 @@ class UserViewModel extends ChangeNotifier {
   Future<void> toggleLike(DiaryEntry entry) async {
     try {
       await _repository.toggleLike(entry.id, entry.isLikedByMe);
-
-      final index = _diary.indexWhere((d) => d.id == entry.id);
-      if (index != -1) {
-        final current = _diary[index];
-        _diary[index] = current.copyWith(
-          isLikedByMe: !current.isLikedByMe,
-          likesCount: current.isLikedByMe ? current.likesCount - 1 : current.likesCount + 1,
-        );
-        notifyListeners();
-      }
     } catch (e) {
       debugPrint("Error toggling like: $e");
+    }
+  }
+
+  // LISTE
+  Future<void> createList(String title, String? description, bool isPublic, List<Game> games) async {
+    try {
+      await _repository.createList(title, description, isPublic, games);
+      await fetchAllData();
+    } catch (e) {
+      debugPrint("Error creating list: $e");
+    }
+  }
+
+  Future<void> voteList(UserList list, int value) async {
+    try {
+      await _repository.voteList(list.id, value);
+      await fetchAllData();
+    } catch (e) {
+      debugPrint("Error voting list: $e");
+    }
+  }
+
+  Future<void> updateList(String listId, String title, String? description, bool isPublic, List<Game> games) async {
+    try {
+      await _repository.updateList(listId, title, description, isPublic, games);
+      await fetchAllData();
+    } catch (e) {
+      debugPrint("Error updating list: $e");
+    }
+  }
+
+  Future<void> deleteList(String listId) async {
+    try {
+      await _repository.deleteList(listId);
+      await fetchAllData();
+    } catch (e) {
+      debugPrint("Error deleting list: $e");
     }
   }
 }

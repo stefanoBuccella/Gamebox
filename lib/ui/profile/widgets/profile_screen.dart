@@ -10,6 +10,10 @@ import '../../core/view_model/navigation_view_model.dart';
 import '../../../domain/models/game.dart';
 import '../../../domain/models/diary_entry.dart';
 
+import 'create_list_screen.dart';
+import 'list_detail_screen.dart';
+import '../../../domain/models/user_list.dart';
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -455,8 +459,10 @@ class DiaryTab extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               const Text("YOUR REVIEW:", style: TextStyle(color: AppColors.charcoal, fontSize: 12, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              Text(entry.reviewText.isEmpty ? "No notes added." : entry.reviewText, style: const TextStyle(color: Colors.white)),
+              if (entry.reviewText.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(entry.reviewText, style: const TextStyle(color: Colors.white)),
+              ],
               const SizedBox(height: 24),
               Row(
                 children: [
@@ -570,8 +576,126 @@ Widget _buildAddButton(BuildContext context) {
 
 class ListsPlaceholderTab extends StatelessWidget {
   const ListsPlaceholderTab({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('YOUR LISTS\n(COMING SOON)', textAlign: TextAlign.center, style: TextStyle(color: AppColors.charcoal, fontWeight: FontWeight.bold)));
+    final userVM = context.watch<UserViewModel>();
+    final lists = userVM.myLists;
+
+    if (lists.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("YOU HAVEN'T CREATED ANY LISTS", style: TextStyle(color: AppColors.charcoal, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CreateListScreen())),
+              icon: const Icon(Icons.add),
+              label: const Text("CREATE NEW LIST"),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(20),
+      itemCount: lists.length + 1,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: ElevatedButton.icon(
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CreateListScreen())),
+              icon: const Icon(Icons.add),
+              label: const Text("CREATE NEW LIST"),
+            ),
+          );
+        }
+        final list = lists[index - 1];
+        return _buildListRow(context, list);
+      },
+    );
+  }
+
+  Widget _buildListRow(BuildContext context, UserList list) {
+    return InkWell(
+      onLongPress: () => Navigator.push(context, MaterialPageRoute(builder: (_) => CreateListScreen(existingList: list))),
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ListDetailScreen(list: list))),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 70,
+              height: 95,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: AppColors.charcoal,
+                image: list.games.isNotEmpty && list.games[0].imageUrl != null
+                    ? DecorationImage(image: NetworkImage(list.games[0].imageUrl!), fit: BoxFit.cover)
+                    : null,
+              ),
+              child: list.games.isEmpty || list.games[0].imageUrl == null
+                  ? const Icon(Icons.collections_bookmark, color: AppColors.gunmetal)
+                  : null,
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(list.title.toUpperCase(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                  if (list.description != null && list.description!.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        list.description!,
+                        style: const TextStyle(color: Colors.white70, fontSize: 13),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  const SizedBox(height: 4),
+                  Text("${list.games.length} games", style: const TextStyle(color: AppColors.charcoal, fontSize: 11, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(Icons.thumb_up, color: list.myVote == 1 ? AppColors.cyberCyan : AppColors.charcoal, size: 14),
+                      const SizedBox(width: 4),
+                      Text("${list.upvotesCount}", style: const TextStyle(color: Colors.white, fontSize: 12)),
+                      const SizedBox(width: 12),
+                      Icon(Icons.thumb_down, color: list.myVote == -1 ? AppColors.cyberCyan : AppColors.charcoal, size: 14),
+                      const SizedBox(width: 4),
+                      Text("${list.downvotesCount}", style: const TextStyle(color: Colors.white, fontSize: 12)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: AppColors.charcoal),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCoverPreview(Game game, double scale) {
+    return Transform.scale(
+      scale: scale,
+      child: Container(
+        width: 60,
+        height: 80,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 4, offset: const Offset(2, 2))],
+          image: game.imageUrl != null 
+              ? DecorationImage(image: NetworkImage(game.imageUrl!), fit: BoxFit.cover)
+              : null,
+          color: AppColors.charcoal,
+        ),
+      ),
+    );
   }
 }

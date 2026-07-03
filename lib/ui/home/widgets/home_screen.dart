@@ -4,6 +4,10 @@ import '../../core/theme/app_colors.dart';
 import '../../profile/view_model/user_view_model.dart';
 import '../../details/widgets/game_detail_screen.dart';
 
+import '../../profile/widgets/list_detail_screen.dart';
+import '../../../domain/models/user_list.dart';
+import '../../../domain/models/game.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -96,11 +100,95 @@ class PopularListsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'POPULAR LISTS\n(MOST UPVOTED)',
-        textAlign: TextAlign.center,
-        style: TextStyle(color: AppColors.charcoal, fontWeight: FontWeight.bold),
+    final userVM = context.watch<UserViewModel>();
+    final lists = userVM.publicLists;
+
+    if (lists.isEmpty) {
+      return const Center(
+        child: Text(
+          'NO POPULAR LISTS THIS WEEK',
+          style: TextStyle(color: AppColors.charcoal, fontWeight: FontWeight.bold),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(20),
+      itemCount: lists.length,
+      itemBuilder: (context, index) {
+        final list = lists[index];
+        return _buildPublicListRow(context, list);
+      },
+    );
+  }
+
+  Widget _buildPublicListRow(BuildContext context, UserList list) {
+    return InkWell(
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ListDetailScreen(list: list))),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 70,
+              height: 95,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: AppColors.charcoal,
+                image: list.games.isNotEmpty && list.games[0].imageUrl != null
+                    ? DecorationImage(image: NetworkImage(list.games[0].imageUrl!), fit: BoxFit.cover)
+                    : null,
+              ),
+              child: list.games.isEmpty || list.games[0].imageUrl == null
+                  ? const Icon(Icons.collections_bookmark, color: AppColors.gunmetal)
+                  : null,
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(list.title.toUpperCase(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text("@${list.username}", style: const TextStyle(color: AppColors.cyberCyan, fontSize: 12, fontWeight: FontWeight.bold)),
+                  if (list.description != null && list.description!.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        list.description!,
+                        style: const TextStyle(color: Colors.white70, fontSize: 13),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(Icons.thumb_up, color: list.myVote == 1 ? AppColors.cyberCyan : AppColors.charcoal, size: 14),
+                      const SizedBox(width: 4),
+                      Text("${list.upvotesCount - list.downvotesCount} points", style: const TextStyle(color: Colors.white, fontSize: 12)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCoverPreview(Game game, double scale) {
+    return Transform.scale(
+      scale: scale,
+      child: Container(
+        width: 60,
+        height: 80,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 4, offset: const Offset(2, 2))],
+          image: game.imageUrl != null ? DecorationImage(image: NetworkImage(game.imageUrl!), fit: BoxFit.cover) : null,
+          color: AppColors.charcoal,
+        ),
       ),
     );
   }
@@ -203,13 +291,15 @@ class MyFeedTab extends StatelessWidget {
                               );
                             }),
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            entry.reviewText.isEmpty ? "No comments." : entry.reviewText,
-                            style: const TextStyle(color: Colors.white70, fontSize: 14),
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          if (entry.reviewText.isNotEmpty) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              entry.reviewText,
+                              style: const TextStyle(color: Colors.white70, fontSize: 14),
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                           const SizedBox(height: 8),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

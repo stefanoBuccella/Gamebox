@@ -35,17 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/images/logo.png', height: 120),
-                const SizedBox(height: 16),
-                const Text(
-                  "GAMEBOX",
-                  style: TextStyle(
-                    fontSize: 32,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2,
-                  ),
-                ),
+                Image.asset('assets/images/logo.png', height: 300),
                 const SizedBox(height: 40),
                 TextField(
                   controller: _emailController,

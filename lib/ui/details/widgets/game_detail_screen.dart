@@ -45,7 +45,9 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
   }
 
   List<DiaryEntry> get _filteredReviews {
-    final reviews = List<DiaryEntry>.from(_allReviews);
+    final userVM = context.read<UserViewModel>();
+    final reviews = _allReviews.where((r) => r.username != userVM.username).toList();
+
     if (_reviewFilter == 'Popular') {
       reviews.sort((a, b) => b.likesCount.compareTo(a.likesCount));
     } else if (_reviewFilter == 'Recent') {
@@ -196,7 +198,8 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
                               ],
                             ),
                             const SizedBox(height: 12),
-                            Text(myEntry.reviewText.isEmpty ? "No comments." : myEntry.reviewText, style: const TextStyle(color: Colors.white)),
+                            if (myEntry.reviewText.isNotEmpty)
+                              Text(myEntry.reviewText, style: const TextStyle(color: Colors.white)),
                           ],
                         ),
                       ),
@@ -233,8 +236,6 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
                         itemCount: _filteredReviews.length,
                         itemBuilder: (context, index) {
                           final review = _filteredReviews[index];
-                          final isMe = review.username == userVM.username;
-                          if (isMe) return const SizedBox.shrink();
 
                           return Container(
                             margin: const EdgeInsets.only(bottom: 16),
@@ -265,8 +266,22 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
                                           icon: Icon(review.isLikedByMe ? Icons.favorite : Icons.favorite_border, 
                                             color: review.isLikedByMe ? Colors.redAccent : AppColors.charcoal, size: 20),
                                           onPressed: () async {
+                                            final bool wasLiked = review.isLikedByMe;
+                                            
+                                            setState(() {
+                                              final mainIndex = _allReviews.indexWhere((r) => r.id == review.id);
+                                              if (mainIndex != -1) {
+                                                _allReviews[mainIndex] = review.copyWith(
+                                                  isLikedByMe: !wasLiked,
+                                                  likesCount: wasLiked 
+                                                      ? (review.likesCount > 0 ? review.likesCount - 1 : 0) 
+                                                      : review.likesCount + 1,
+                                                );
+                                              }
+                                            });
+                                            
+                                            // Chiamata al database passando lo stato ORIGINALE (prima del click)
                                             await userVM.toggleLike(review);
-                                            await _loadReviews(); // Refresh local list
                                           },
                                         ),
                                         Text("${review.likesCount}", style: const TextStyle(color: Colors.white, fontSize: 12)),
@@ -281,8 +296,10 @@ class _GameDetailScreenState extends State<GameDetailScreen> {
                                     color: AppColors.cyberCyan, size: 16,
                                   )),
                                 ),
-                                const SizedBox(height: 8),
-                                Text(review.reviewText, style: const TextStyle(color: Colors.white70)),
+                                if (review.reviewText.isNotEmpty) ...[
+                                  const SizedBox(height: 8),
+                                  Text(review.reviewText, style: const TextStyle(color: Colors.white70)),
+                                ],
                               ],
                             ),
                           );

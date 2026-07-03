@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import '../services/supabase_service.dart';
 import '../../domain/models/game.dart';
 import '../../domain/models/diary_entry.dart';
+import '../../domain/models/user_list.dart';
 
 class UserRepository {
   final SupabaseService _service;
@@ -39,8 +40,9 @@ class UserRepository {
   // DIARIO
   Future<List<Map<String, dynamic>>> getDiary(String userId) => _service.fetchUserDiary(userId);
 
-  Future<void> saveReview(Game game, double rating, String note) async {
+  Future<void> saveReview(Game game, double rating, String note, {String? id}) async {
     await _service.saveToDiary(
+      id: id,
       gameId: game.id,
       gameJson: game.toJson(),
       rating: rating,
@@ -65,4 +67,31 @@ class UserRepository {
   Future<void> addToToPlay(Game game) async => await _service.saveToToPlay(game.id, game.toJson());
 
   Future<void> removeFromToPlay(String gameId) async => await _service.removeFromToPlay(gameId);
+
+  // LISTE
+  Future<List<UserList>> getUserLists(String userId) async {
+    final data = await _service.fetchUserLists(userId);
+    return data.map((l) => UserList.fromJson(l)).where((l) => l.id != 'error').toList();
+  }
+
+  Future<List<UserList>> getPublicLists() async {
+    final data = await _service.fetchPublicLists();
+    return data.map((l) => UserList.fromJson(l)).where((l) => l.id != 'error').toList();
+  }
+
+  Future<void> createList(String title, String? description, bool isPublic, List<Game> games) async {
+    await _service.createList(title, description, isPublic, games.map((g) => g.toJson()).toList());
+  }
+
+  Future<void> voteList(String listId, int value) async {
+    await _service.toggleListVote(listId, value);
+  }
+
+  Future<void> updateList(String listId, String title, String? description, bool isPublic, List<Game> games) async {
+    await _service.updateList(listId, title, description, isPublic, games.map((g) => g.toJson()).toList());
+  }
+
+  Future<void> deleteList(String listId) async {
+    await _service.deleteList(listId);
+  }
 }

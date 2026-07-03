@@ -91,6 +91,7 @@ class _ReviewDialogState extends State<ReviewDialog> {
                   widget.game,
                   _rating,
                   _noteController.text,
+                  id: widget.existingEntry?.id,
                 );
                 if (mounted) {
                   Navigator.pop(context, true);
