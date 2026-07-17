@@ -22,14 +22,19 @@ class IgdbService {
 
     try {
       debugPrint('Autenticazione IGDB in corso...');
+
       final response = await Dio().post(
         'https://id.twitch.tv/oauth2/token',
-        queryParameters: {
+        data: {
           'client_id': _clientId,
           'client_secret': _clientSecret,
           'grant_type': 'client_credentials',
         },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
       );
+
       _accessToken = response.data['access_token'];
       debugPrint('Autenticazione IGDB completata con successo');
     } catch (e) {
